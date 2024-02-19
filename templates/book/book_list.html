@@ -1,0 +1,31 @@
+{% extends 'books/base.html' %}
+{% block content %}
+    <div class="py-4">
+        <h3 class="col-md-8 offset-md-2">All Books</h3>
+    </div>
+    {% for book in books %}
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{{ book.picture.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <a href="{% url 'books:book-detail' book.slug %}"
+                           class="link-offset-2 link-underline link-underline-opacity-0">
+                            <h3 class="card-title">{{ book.title }}</h3></a>
+                        {% for author in books.book_author %}
+                            <h5 class="card-title">{{ author.first_name }}</h5>
+                        {% endfor %}
+                        <p class="card-text">Published: {{ book.published }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-body-secondary">{{ book.updated_at }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+    {% empty %}
+        <h3>No Books</h3>
+    {% endfor %}
+{% endblock %}

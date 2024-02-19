@@ -1,0 +1,107 @@
+{% extends 'books/base.html' %}
+{% block title %} Book Detail{% endblock %}
+{% block content %}
+    <style>
+        .text-container {
+            max-height: 60px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .text-container.show-more {
+            max-height: none;
+        }
+
+        .show-more-btn {
+            display: block;
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+    <h3>Book Detail Page</h3>
+    <div class="row mt-5">
+        <div class="rounded col-4 ">
+            <img src="{{ book.picture.url }}" class="img-fluid" alt=""
+                 style="border-radius: 8px; width: 400px; display: block">
+        </div>
+        <div class="col-6">
+            <h3>{{ book.title }}</h3>
+            <span class="my-2">Authors:
+                {% for author in book.author.all %}
+                    <a href="{% url 'books:author' author.pk %}" class="link-offset-2 link-underline link-underline-opacity-0">
+                    {{ author.first_name }} {{ author.last_name }}
+                    </a>
+                {% endfor %}
+            </span><br>
+            <span>Published: {{ book.published }}</span> <br>
+            <span>Genres:
+                {% for genr in book.genre.all %}
+                    <a href="" class="fw-light">{{ genr.name }}</a>
+                {% endfor %}
+
+            </span>
+            <div class="text-container">
+                <p>{{ book.description }}</p>
+            </div>
+            <button class="btn active" onclick="toggleText()">Show More</button>
+            <hr style="display: block">
+            <h3>This edition</h3>
+            <p>ISBN: {{ book.isbn }}</p>
+            <p>Page: {{ book.page }} pages</p>
+            <p>Published: {{ book.published }}</p>
+            <p>Language: {{ book.language }}</p>
+        </div>
+
+
+    </div>
+    <hr>
+    <div class="row">
+        <h3>Reviews</h3>
+        <div class="col-9">
+            {% for review in book.reviews.all %}
+                <div class="card my-2">
+                    <div class="card-header">
+                        {{ review.user.username }} rated {{ review.rating }}
+                        {% for n in book.review.rating %}
+                            <span class="review-star {% if n <= review.rating %}review-star-active{% endif %}">★</span>
+                        {% endfor %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.user.username }}</h5>
+                        <p class="card-text">{{ review.body }}</p>
+                        <button class="btn btn-light like-btn"> Like 👍</button>
+                        <span class="fw-lighter like-count-{{ review.like.id }}">{{ review.like }} {{ review.like_count }} likes</span>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+        <hr>
+        {% for author in books.author %}
+            <div class="rounded col-4 ">
+                <img src="{{ author.avatar.url }}" class="img-fluid" alt=""
+                     style="border-radius: 8px; width: 400px; display: block">
+            </div>
+        {% endfor %}
+
+
+    </div>
+
+    <script>
+        function toggleText() {
+            var textContainer = document.querySelector('.text-container');
+            textContainer.classList.toggle('show-more');
+
+            var btn = document.querySelector('.show-more-btn');
+            if (textContainer.classList.contains('show-more')) {
+                btn.textContent = 'Show Less';
+            } else {
+                btn.textContent = 'Show More';
+            }
+        }
+
+    </script>
+
+
+{% endblock %}
